@@ -1,0 +1,47 @@
+---
+abstract: 'simple toml parser'
+author:
+  - 'karupanerura <karupa@cpan.org>'
+build_requires:
+  MIME::Base64: '0'
+  Test::More: '0.98'
+configure_requires:
+  CPAN::Meta: '0'
+  CPAN::Meta::Prereqs: '0'
+  Module::Build: '0.38'
+dynamic_config: 0
+generated_by: 'Minilla/v1.0.0, CPAN::Meta::Converter version 2.141170'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: '1.4'
+name: TOML-Parser
+no_index:
+  directory:
+    - t
+    - xt
+    - inc
+    - share
+    - eg
+    - examples
+    - author
+    - builder
+provides:
+  TOML::Parser:
+    file: lib/TOML/Parser.pm
+    version: '0.01'
+  TOML::Parser::Tokenizer:
+    file: lib/TOML/Parser/Tokenizer.pm
+  TOML::Parser::Util:
+    file: lib/TOML/Parser/Util.pm
+requires:
+  Encode: '0'
+  Types::Serialiser: '0'
+  parent: '0'
+  perl: '5.008005'
+resources:
+  bugtracker: https://github.com/karupanerura/TOML-Parser/issues
+  homepage: https://github.com/karupanerura/TOML-Parser
+  repository: git://github.com/karupanerura/TOML-Parser.git
+version: '0.01'
+x_authority: cpan:KARUPA
