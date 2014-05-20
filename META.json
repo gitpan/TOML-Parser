@@ -35,8 +35,8 @@
       },
       "develop" : {
          "requires" : {
-            "File::Slurp" : "0",
             "JSON" : "2",
+            "Path::Tiny" : "0",
             "TOML" : "0",
             "Test::CPAN::Meta" : "0",
             "Test::MinimumVersion::Fast" : "0.04",
@@ -63,7 +63,7 @@
    "provides" : {
       "TOML::Parser" : {
          "file" : "lib/TOML/Parser.pm",
-         "version" : "0.01"
+         "version" : "0.02"
       },
       "TOML::Parser::Tokenizer" : {
          "file" : "lib/TOML/Parser/Tokenizer.pm"
@@ -83,6 +83,6 @@
          "web" : "https://github.com/karupanerura/TOML-Parser"
       }
    },
-   "version" : "0.01",
+   "version" : "0.02",
    "x_authority" : "cpan:KARUPA"
 }
