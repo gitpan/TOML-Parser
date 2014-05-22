@@ -29,9 +29,11 @@ no_index:
 provides:
   TOML::Parser:
     file: lib/TOML/Parser.pm
-    version: '0.02'
+    version: '0.03'
   TOML::Parser::Tokenizer:
     file: lib/TOML/Parser/Tokenizer.pm
+  TOML::Parser::Tokenizer::Strict:
+    file: lib/TOML/Parser/Tokenizer/Strict.pm
   TOML::Parser::Util:
     file: lib/TOML/Parser/Util.pm
 requires:
@@ -43,5 +45,5 @@ resources:
   bugtracker: https://github.com/karupanerura/TOML-Parser/issues
   homepage: https://github.com/karupanerura/TOML-Parser
   repository: git://github.com/karupanerura/TOML-Parser.git
-version: '0.02'
+version: '0.03'
 x_authority: cpan:KARUPA

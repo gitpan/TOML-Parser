@@ -17,19 +17,6 @@ TOML::Parser is a simple toml parser.
 This data structure complies with the tests
 provided at [https://github.com/mojombo/toml/tree/master/tests](https://github.com/mojombo/toml/tree/master/tests).
 
-# WHY?
-
-In my point of view, it's very difficult to maintain `TOML::from_toml` because -so far as I understand- there's some issues.
-
-Specifically, for example, `TOML::from_toml` doesn't interpret correctly in some cases.
-In addition, it reports wrong line number when the error occurs.
-(This is because `TOML::from_toml` deletes the comments and blank lines before it parses.)
-
-I conclude that `TOML::from_toml` has an architectural feet,
-and that's why I came to an idea of re-creating another implementation in order to solve the problem.
-
-I believe that this is much easier than taking other solutions.
-
 # METHODS
 
 - my $parser = TOML::Parser->new(\\%args)
@@ -46,6 +33,7 @@ I believe that this is much easier than taking other solutions.
     - `inflate_datetime`
 
         If use it, You can replace inflate `datetime` process.
+        The subroutine of default is `identity`. `e.g.) sub { $_[0] }`
 
             use TOML::Parser;
             use DateTime;
@@ -62,6 +50,7 @@ I believe that this is much easier than taking other solutions.
     - `inflate_boolean`
 
         If use it, You can replace inflate boolean process.
+        The return value of default subroutine is `Types::Serialiser::true` or `Types::Serialiser::false`.
 
             use TOML::Parser;
 
@@ -73,22 +62,23 @@ I believe that this is much easier than taking other solutions.
                 },
             );
 
+    - `strict_mode`
+
+        TOML::Parser is using a more flexible rule for compatibility with old TOML of default.
+        If make this option true value, You can parse a toml with strict rule.
+
+            use TOML::Parser;
+
+            # create new parser
+            my $parser = TOML::Parser->new(
+                strict_mode => 1
+            );
+
 - my $data = $parser->parse\_file($path)
 - my $data = $parser->parse\_fh($fh)
 - my $data = $parser->parse($src)
 
     Transforms a string containing toml to a perl data structure or vice versa.
-
-# BENCHMARK
-
-benchmark: by \`author/benchmark.pl\`
-
-    Benchmark: timing 10000 iterations of TOML, TOML::Parser...
-          TOML: 11 wallclock secs (11.11 usr +  0.02 sys = 11.13 CPU) @ 898.47/s (n=10000)
-    TOML::Parser:  7 wallclock secs ( 6.84 usr +  0.01 sys =  6.85 CPU) @ 1459.85/s (n=10000)
-                   Rate         TOML TOML::Parser
-    TOML          898/s           --         -38%
-    TOML::Parser 1460/s          62%           --
 
 # SEE ALSO
 

@@ -5,9 +5,10 @@ use warnings;
 use utf8;
 use Encode;
 
-our $VERSION = "0.02";
+our $VERSION = "0.03";
 
 use TOML::Parser::Tokenizer qw/:constant/;
+use TOML::Parser::Tokenizer::Strict;
 use TOML::Parser::Util qw/unescape_str/;
 use Types::Serialiser;
 
@@ -17,6 +18,7 @@ sub new {
     return bless +{
         inflate_datetime => sub { $_[0] },
         inflate_boolean  => sub { $_[0] eq 'true' ? Types::Serialiser::true : Types::Serialiser::false },
+        strict_mode      => 0,
         %$args,
     } => $class;
 }
@@ -33,6 +35,11 @@ sub parse_fh {
     return $self->parse($src);
 }
 
+sub _tokenizer_class {
+    my $self = shift;
+    return $self->{strict_mode} ? 'TOML::Parser::Tokenizer::Strict' : 'TOML::Parser::Tokenizer';
+}
+
 our @TOKENS;
 our $ROOT;
 our $CONTEXT;
@@ -41,7 +48,7 @@ sub parse {
 
     local $ROOT    = {};
     local $CONTEXT = $ROOT;
-    local @TOKENS  = TOML::Parser::Tokenizer->tokenize($src);
+    local @TOKENS  = $self->_tokenizer_class->tokenize($src);
     return $self->_parse_tokens();
 }
 
@@ -49,7 +56,7 @@ sub _parse_tokens {
     my $self = shift;
 
     while (my $token = shift @TOKENS) {
-        my ($type, $pos, $val) = @$token;
+        my ($type, $val) = @$token;
         if ($type eq TOKEN_TABLE) {
             $self->_parse_table($val);
         }
@@ -58,6 +65,7 @@ sub _parse_tokens {
         }
         elsif ($type eq TOKEN_KEY) {
             my $token = shift @TOKENS;
+            die "Duplicate key. key:$val" if exists $CONTEXT->{$val};
             $CONTEXT->{$val} = $self->_parse_value_token($token);
         }
         elsif ($type eq TOKEN_COMMENT) {
@@ -117,7 +125,7 @@ sub _parse_value_token {
     my $self  = shift;
     my $token = shift;
 
-    my ($type, $pos, $val) = @$token;
+    my ($type, $val) = @$token;
     if ($type eq TOKEN_COMMENT) {
         return; # pass through
     }
@@ -179,19 +187,6 @@ TOML::Parser is a simple toml parser.
 This data structure complies with the tests
 provided at L<https://github.com/mojombo/toml/tree/master/tests>.
 
-=head1 WHY?
-
-In my point of view, it's very difficult to maintain C<TOML::from_toml> because -so far as I understand- there's some issues.
-
-Specifically, for example, C<TOML::from_toml> doesn't interpret correctly in some cases.
-In addition, it reports wrong line number when the error occurs.
-(This is because C<TOML::from_toml> deletes the comments and blank lines before it parses.)
-
-I conclude that C<TOML::from_toml> has an architectural feet,
-and that's why I came to an idea of re-creating another implementation in order to solve the problem.
-
-I believe that this is much easier than taking other solutions.
-
 =head1 METHODS
 
 =over
@@ -212,6 +207,7 @@ Arguments can be:
 =item * C<inflate_datetime>
 
 If use it, You can replace inflate C<datetime> process.
+The subroutine of default is C<identity>. C<e.g.) sub { $_[0] }>
 
     use TOML::Parser;
     use DateTime;
@@ -228,6 +224,7 @@ If use it, You can replace inflate C<datetime> process.
 =item * C<inflate_boolean>
 
 If use it, You can replace inflate boolean process.
+The return value of default subroutine is C<Types::Serialiser::true> or C<Types::Serialiser::false>.
 
     use TOML::Parser;
 
@@ -237,6 +234,18 @@ If use it, You can replace inflate boolean process.
             my $boolean = shift;
             return $boolean eq 'true' ? 1 : 0;
         },
+    );
+
+=item * C<strict_mode>
+
+TOML::Parser is using a more flexible rule for compatibility with old TOML of default.
+If make this option true value, You can parse a toml with strict rule.
+
+    use TOML::Parser;
+
+    # create new parser
+    my $parser = TOML::Parser->new(
+        strict_mode => 1
     );
 
 =back
@@ -250,17 +259,6 @@ If use it, You can replace inflate boolean process.
 Transforms a string containing toml to a perl data structure or vice versa.
 
 =back
-
-=head1 BENCHMARK
-
-benchmark: by `author/benchmark.pl`
-
-    Benchmark: timing 10000 iterations of TOML, TOML::Parser...
-          TOML: 11 wallclock secs (11.11 usr +  0.02 sys = 11.13 CPU) @ 898.47/s (n=10000)
-    TOML::Parser:  7 wallclock secs ( 6.84 usr +  0.01 sys =  6.85 CPU) @ 1459.85/s (n=10000)
-                   Rate         TOML TOML::Parser
-    TOML          898/s           --         -38%
-    TOML::Parser 1460/s          62%           --
 
 =head1 SEE ALSO
 
@@ -278,4 +276,3 @@ it under the same terms as Perl itself.
 karupanerura E<lt>karupa@cpan.orgE<gt>
 
 =cut
-
