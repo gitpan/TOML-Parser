@@ -4,7 +4,7 @@
       "karupanerura <karupa@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v1.0.0",
+   "generated_by" : "Minilla/v2.1.1",
    "license" : [
       "perl_5"
    ],
@@ -30,7 +30,8 @@
          "requires" : {
             "CPAN::Meta" : "0",
             "CPAN::Meta::Prereqs" : "0",
-            "Module::Build" : "0.38"
+            "Module::Build" : "0",
+            "Module::Build::Tiny" : "0.035"
          }
       },
       "develop" : {
@@ -63,7 +64,7 @@
    "provides" : {
       "TOML::Parser" : {
          "file" : "lib/TOML/Parser.pm",
-         "version" : "0.03"
+         "version" : "0.04"
       },
       "TOML::Parser::Tokenizer" : {
          "file" : "lib/TOML/Parser/Tokenizer.pm"
@@ -86,6 +87,6 @@
          "web" : "https://github.com/karupanerura/TOML-Parser"
       }
    },
-   "version" : "0.03",
+   "version" : "0.04",
    "x_authority" : "cpan:KARUPA"
 }

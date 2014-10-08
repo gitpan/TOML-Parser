@@ -15,6 +15,7 @@ minil.toml
 t/000_compile.t
 t/001_parser/broken.t
 t/001_parser/comma_at_last_of_array.t
+t/001_parser/dot_in_array.t
 t/001_parser/duplicate_key.t
 t/001_parser/empty_array.t
 t/001_parser/empty_comment.t
@@ -25,11 +26,13 @@ t/001_parser/example_fruit.t
 t/001_parser/hard_example.t
 t/001_parser/single_quote.t
 t/toml/comma_at_last_of_array.toml
+t/toml/dot_in_key.toml
 t/toml/empty_array.toml
 t/toml/empty_comment.toml
 t/toml/empty_string.toml
 t/toml/example.toml
 t/toml/example_fruit.toml
 t/toml/hard_example.toml
+wercker.yml
 META.yml
 MANIFEST
